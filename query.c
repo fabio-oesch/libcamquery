@@ -21,9 +21,12 @@ static void init( void ){
 }
 
 static int prov_flow(prov_entry_t* from, prov_entry_t* edge, prov_entry_t* to){
-  print("From:\t(%s)", node_str(prov_type(from)) );
-  print("Edge:\t-%s->", relation_str(prov_type(edge)) );
-  print("To:\t(%s)", node_str(prov_type(to)) );
+  if (strcmp((from)->arg_info.value, "/usr/bin/chromium-browser") == 0 || strcmp((to)->arg_info.value, "/usr/bin/chromium-browser") == 0) {
+  //if ((from)->task_info.pid == 3511) {
+    print("From:\t(%s),\t%s", node_str(prov_type(from)), (from)->arg_info.value);
+    print("Edge:\t-%s,%s->", relation_str(prov_type(edge)), (edge)->arg_info.value);
+    print("To:\t(%s),\t%s", node_str(prov_type(to)), (to)->arg_info.value);
+  }
   return 0;
 }
 
