@@ -30,5 +30,16 @@ load:
 unload:
 	sudo rmmod query
 
+reload:
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules
+	sudo $(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules_install
+	sudo rmmod query
+	sudo modprobe query
+
+start:
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules
+	sudo $(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules_install
+	sudo modprobe query
+
 install:
 	cd ./include && sudo $(MAKE) install
