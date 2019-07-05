@@ -15,40 +15,26 @@
 
 /* static uint64_t arr[50]; */
 /* static int var; */
+static union prov_elt node;
 
 static void init( void ){
   print("Module Loaded!");
   struct path path;
   kern_path("/usr/bin/ls", LOOKUP_FOLLOW, &path);
+  __vfs_getxattr(path.dentry, path.dentry->d_inode, XATTR_NAME_PROVENANCE, &node, sizeof(union prov_elt));
   print("inode of ls: %ld", path.dentry->d_inode->i_ino);
+  //set_tracked(&node);
 }
 
 static int prov_flow(prov_entry_t* from, prov_entry_t* edge, prov_entry_t* to){
-  if (strcmp((from)->arg_info.value, "/usr/bin/vim") == 0) {
-    set_propagate(from);
+  if (strcmp((from)->arg_info.value, "/usr/bin/ls") == 0) {
+    set_tracked(from);
   }
-  if (provenance_does_propagate(from)) {
+  print("From type: %s, %d", node_str(prov_type(from)), provenance_is_tracked(from));
+  if (provenance_is_tracked(from)) {
     print("From type: %s, %s", node_str(prov_type(from)), (from)->arg_info.value);
     print("To type: %s, %s", node_str(prov_type(to)), (to)->arg_info.value);
   }
-  /* if (strcmp((from)->arg_info.value, "/usr/bin/libreoffice") == 0) { */
-  /* //if ((from)->task_info.pid == 3511) { */
-  /*   //print("Pre From id: %llu", node_identifier(from).id); */
-  /*   //print("Pre From type: %s", node_str(prov_type(from))); */
-  /*   print("From id: %llu", node_identifier(from).id); */
-  /*   print("From type: %s", node_str(prov_type(from))); */
-  /*   print("Edge id: %llu", node_identifier(edge).id); */
-  /*   print("Edge type: %d", prov_type_is_relation(prov_type(edge))); */
-  /*   print("To id: %llu", node_identifier(to).id); */
-  /*   print("To type: %s", node_str(prov_type(to))); */
-  /*   //print("From:\t(%s),\t%s,\t%llu" , node_str(prov_type(from)), (from)->arg_info.value, arr[var - 1]); */
-  /*   //print("Edge:\t-%s,%s->", relation_str(prov_type(edge)), (edge)->arg_info.value); */
-  /*   //print("To:\t(%s),\t%s", node_str(prov_type(to)), (to)->arg_info.value); */
-  /* } else if (in_array(node_identifier(from).id)) { */
-  /*   arr[var++] = node_identifier(to).id; */
-  /*   print("In list from\t%llu", node_identifier(from).id); */
-  /*   print("In list to\t%llu", node_identifier(to).id); */
-  /* } */
   return 0;
 }
 

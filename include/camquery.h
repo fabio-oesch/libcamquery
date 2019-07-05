@@ -22,6 +22,7 @@
 #include <linux/namei.h>
 #include <linux/fs.h>
 #include <linux/namei.h>
+#include <linux/xattr.h>
 #include <linux/provenance_query.h>
 #include <linux/provenance_types.h>
 
