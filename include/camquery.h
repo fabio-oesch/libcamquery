@@ -17,6 +17,11 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/mount.h>
+#include <linux/path.h>
+#include <linux/namei.h>
+#include <linux/fs.h>
+#include <linux/namei.h>
 #include <linux/provenance_query.h>
 #include <linux/provenance_types.h>
 

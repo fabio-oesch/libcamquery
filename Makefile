@@ -25,6 +25,8 @@ clean:
 	$(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) clean
 
 load:
+	$(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules
+	sudo $(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules_install
 	sudo modprobe query
 
 unload:

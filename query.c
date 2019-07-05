@@ -13,35 +13,42 @@
  */
 #include "include/camquery.h"
 
-static uint64_t arr[50];
-static int var;
+/* static uint64_t arr[50]; */
+/* static int var; */
 
 static void init( void ){
-  print("Hello world!");
-  var = 0;
-}
-
-static int in_array(uint64_t val) {
-  int i = 0;
-  while (i++ < var) {
-    if(arr[i] == val) return 1;
-  }
-  return 0;
+  print("Module Loaded!");
+  struct path path;
+  kern_path("/usr/bin/ls", LOOKUP_FOLLOW, &path);
+  print("inode of ls: %ld", path.dentry->d_inode->i_ino);
 }
 
 static int prov_flow(prov_entry_t* from, prov_entry_t* edge, prov_entry_t* to){
-  if (strcmp((from)->arg_info.value, "/usr/bin/chromium-browser") == 0 || strcmp((to)->arg_info.value, "/usr/bin/chromium-browser") == 0) {
-  //if ((from)->task_info.pid == 3511) {
-    arr[var++] = node_identifier(from).id;
-    arr[var++] = node_identifier(to).id;
-    print("From:\t(%s),\t%s,\t%llu" , node_str(prov_type(from)), (from)->arg_info.value, arr[var - 1]);
-    print("Edge:\t-%s,%s->", relation_str(prov_type(edge)), (edge)->arg_info.value);
-    print("To:\t(%s),\t%s", node_str(prov_type(to)), (to)->arg_info.value);
-  } else if (in_array(node_identifier(from).id)) {
-    arr[var++] = node_identifier(to).id;
-    print("In list from\t%llu", node_identifier(from).id);
-    print("In list to\t%llu", node_identifier(to).id);
+  if (strcmp((from)->arg_info.value, "/usr/bin/vim") == 0) {
+    set_propagate(from);
   }
+  if (provenance_does_propagate(from)) {
+    print("From type: %s, %s", node_str(prov_type(from)), (from)->arg_info.value);
+    print("To type: %s, %s", node_str(prov_type(to)), (to)->arg_info.value);
+  }
+  /* if (strcmp((from)->arg_info.value, "/usr/bin/libreoffice") == 0) { */
+  /* //if ((from)->task_info.pid == 3511) { */
+  /*   //print("Pre From id: %llu", node_identifier(from).id); */
+  /*   //print("Pre From type: %s", node_str(prov_type(from))); */
+  /*   print("From id: %llu", node_identifier(from).id); */
+  /*   print("From type: %s", node_str(prov_type(from))); */
+  /*   print("Edge id: %llu", node_identifier(edge).id); */
+  /*   print("Edge type: %d", prov_type_is_relation(prov_type(edge))); */
+  /*   print("To id: %llu", node_identifier(to).id); */
+  /*   print("To type: %s", node_str(prov_type(to))); */
+  /*   //print("From:\t(%s),\t%s,\t%llu" , node_str(prov_type(from)), (from)->arg_info.value, arr[var - 1]); */
+  /*   //print("Edge:\t-%s,%s->", relation_str(prov_type(edge)), (edge)->arg_info.value); */
+  /*   //print("To:\t(%s),\t%s", node_str(prov_type(to)), (to)->arg_info.value); */
+  /* } else if (in_array(node_identifier(from).id)) { */
+  /*   arr[var++] = node_identifier(to).id; */
+  /*   print("In list from\t%llu", node_identifier(from).id); */
+  /*   print("In list to\t%llu", node_identifier(to).id); */
+  /* } */
   return 0;
 }
 
