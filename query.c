@@ -21,17 +21,13 @@ static void init( void ){
   print("Module Loaded!");
   struct path path;
   kern_path("/usr/bin/ls", LOOKUP_FOLLOW, &path);
-  __vfs_getxattr(path.dentry, path.dentry->d_inode, XATTR_NAME_PROVENANCE, &node, sizeof(union prov_elt));
-  print("inode of ls: %ld", path.dentry->d_inode->i_ino);
-  //set_tracked(&node);
+  int rc = __vfs_getxattr(path.dentry, path.dentry->d_inode, XATTR_NAME_PROVENANCE, &node, sizeof(union prov_elt));
+  set_tracked(&node);
+  __vfs_setxattr(path.dentry, path.dentry->d_inode, XATTR_NAME_PROVENANCE, &node, sizeof(union prov_elt), 0);
 }
 
 static int prov_flow(prov_entry_t* from, prov_entry_t* edge, prov_entry_t* to){
-  if (strcmp((from)->arg_info.value, "/usr/bin/ls") == 0) {
-    set_tracked(from);
-  }
-  print("From type: %s, %d", node_str(prov_type(from)), provenance_is_tracked(from));
-  if (provenance_is_tracked(from)) {
+  if (provenance_is_tracked(from) || provenance_is_tracked(to)) {
     print("From type: %s, %s", node_str(prov_type(from)), (from)->arg_info.value);
     print("To type: %s, %s", node_str(prov_type(to)), (to)->arg_info.value);
   }
