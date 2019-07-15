@@ -33,9 +33,9 @@ unload:
 	sudo rmmod query
 
 reload:
+	sudo modprobe -r query
 	$(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules
 	sudo $(MAKE) -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules_install
-	sudo rmmod query
 	sudo modprobe query
 
 start:
